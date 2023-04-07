@@ -1,4 +1,4 @@
-from django.contrib.contenttypes import generic
+from django.contrib.contenttypes.admin import GenericTabularInline
 from django.contrib import admin
 from swingtime.models import *
 
@@ -16,7 +16,7 @@ class OccurrenceInline(admin.TabularInline):
     extra = 1
 
 
-class EventNoteInline(generic.GenericTabularInline):
+class EventNoteInline(GenericTabularInline):
     model = Note
     extra = 1
 
