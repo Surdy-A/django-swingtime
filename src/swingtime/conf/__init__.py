@@ -1,5 +1,5 @@
 from django.conf import settings
-import swingtime_settings
+from . import swingtime_settings
 
 
 class AppSettings(object):
@@ -16,7 +16,7 @@ class AppSettings(object):
             self.SETTINGS_MODULE = getattr(settings, global_override)
             try:
                 mod = __import__(self.SETTINGS_MODULE, {}, {}, [''])
-            except ImportError, e:
+            except ImportError as e:
                 raise ImportError(
                     "Could not import settings '%s' (Is it on sys.path? Does it have syntax errors?): %s" % (self.SETTINGS_MODULE, e)
                 )

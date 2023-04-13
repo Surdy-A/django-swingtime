@@ -26,7 +26,7 @@ class Note(models.Model):
     note = models.TextField(_('note'))
     created = models.DateTimeField(_('created'), auto_now_add=True)
 
-    content_type = models.ForeignKey(ContentType, verbose_name=_('content type'),  on_delete=models.CASCADE)
+    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE, verbose_name=_('content type'))
     object_id = models.PositiveIntegerField(_('object id'))
     content_object = GenericForeignKey('content_type', 'object_id')
 
@@ -59,7 +59,7 @@ class Event(models.Model):
     """
     title = models.CharField(_('title'), max_length=32)
     description = models.CharField(_('description'), max_length=100)
-    event_type = models.ForeignKey(EventType, verbose_name=_('event type'),  on_delete=models.CASCADE)
+    event_type = models.ForeignKey(EventType, on_delete=models.CASCADE, verbose_name=_('event type'))
     notes = GenericRelation(Note, verbose_name=_('notes'))
 
     class Meta:
@@ -163,7 +163,7 @@ class Occurrence(models.Model):
     """
     start_time = models.DateTimeField(_('start time'))
     end_time = models.DateTimeField(_('end time'))
-    event = models.ForeignKey(Event, verbose_name=_('event'), editable=False,  on_delete=models.CASCADE)
+    event = models.ForeignKey(Event, on_delete=models.CASCADE, verbose_name=_('event'), editable=False)
     notes = GenericRelation(Note, verbose_name=_('notes'))
 
     objects = OccurrenceManager()
@@ -176,7 +176,6 @@ class Occurrence(models.Model):
     def __unicode__(self):
         return u'%s: %s' % (self.title, self.start_time.isoformat())
 
-    @models.permalink
     def get_absolute_url(self):
         return ('swingtime-occurrence', [str(self.event.id), str(self.id)])
 

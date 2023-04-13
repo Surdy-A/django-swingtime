@@ -6,7 +6,7 @@ from django import http
 from django.conf import settings
 from django.db import models
 from django.template.context import RequestContext
-from django.shortcuts import get_object_or_404, render_to_response
+from django.shortcuts import get_object_or_404, render
 
 from swingtime.models import Event, Occurrence
 from swingtime import utils, forms
@@ -39,9 +39,9 @@ def event_listing(request, template='swingtime/event_list.html', events=None,
     elif hasattr(events, '_clone'):
         events = events._clone()
 
-    return render_to_response(template,
+    return render(request,template,
         dict(extra_context, events=events),
-        context_instance=RequestContext(request))
+        )
 
 
 def event_view(request, pk, template='swingtime/event_detail.html',
@@ -84,9 +84,8 @@ def event_view(request, pk, template='swingtime/event_detail.html',
             initial=dict(dtstart=datetime.now())
         )
 
-    return render_to_response(template,
-        dict(event=event, event_form=event_form, recurrence_form=recurrence_form),
-        context_instance=RequestContext(request))
+    return render(request, template,
+        dict(event=event, event_form=event_form, recurrence_form=recurrence_form))
 
 
 def occurrence_view(request, event_pk, pk,
@@ -112,9 +111,8 @@ def occurrence_view(request, event_pk, pk,
     else:
         form = form_class(instance=occurrence)
 
-    return render_to_response(template,
-        dict(occurrence=occurrence, form=form),
-        context_instance=RequestContext(request))
+    return render(request, template,
+        dict(occurrence=occurrence, form=form))
 
 
 def add_event(request, template='swingtime/add_event.html',
@@ -156,9 +154,8 @@ def add_event(request, template='swingtime/add_event.html',
         event_form = event_form_class()
         recurrence_form = recurrence_form_class(initial=dict(dtstart=dtstart))
 
-    return render_to_response(template,
-        dict(dtstart=dtstart, event_form=event_form, recurrence_form=recurrence_form),
-        context_instance=RequestContext(request))
+    return render(request, template,
+        dict(dtstart=dtstart, event_form=event_form, recurrence_form=recurrence_form))
 
 
 def _datetime_view(request, template, dt, timeslot_factory=None,
@@ -191,8 +188,7 @@ def _datetime_view(request, template, dt, timeslot_factory=None,
         timeslots=timeslot_factory(dt, items, **params)
     )
 
-    return render_to_response(template, data,
-        context_instance=RequestContext(request))
+    return render(request, template, data)
 
 
 
@@ -252,9 +248,8 @@ def year_view(request, year, template='swingtime/yearly_view.html', queryset=Non
         for dt,items in itertools.groupby(occurrences, grouper_key)
     ]
 
-    return render_to_response(template,
-        dict(year=year, by_month=by_month, next_year=year + 1, last_year=year - 1),
-        context_instance=RequestContext(request))
+    return render(request, template,
+        dict(year=year, by_month=by_month, next_year=year + 1, last_year=year - 1))
 
 
 def month_view(request, year, month, template='swingtime/monthly_view.html',
@@ -305,7 +300,7 @@ def month_view(request, year, month, template='swingtime/monthly_view.html',
         for dom,items in itertools.groupby(occurrences, lambda o: o.start_time.day)
     ])
     
-    weekdays = range(8)
+    weekdays = list(range(8))
     for wd in forms.WEEKDAY_LONG:
         weekdays[wd[0]] = wd[1]
     weekdays[0] = weekdays[7]
@@ -319,5 +314,4 @@ def month_view(request, year, month, template='swingtime/monthly_view.html',
         last_month=dtstart + timedelta(days=-1),
     )
 
-    return render_to_response(template, data,
-        context_instance=RequestContext(request))
+    return render(request, template, data)

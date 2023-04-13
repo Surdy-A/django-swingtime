@@ -5,7 +5,7 @@ from datetime import datetime, date, time, timedelta
 
 from django import forms
 from django.utils.translation import gettext_lazy as _
-from django.forms.extras.widgets import SelectDateWidget
+from django.forms import SelectDateWidget
 
 from dateutil import rrule
 from swingtime.conf import settings as swingtime_settings
@@ -375,6 +375,7 @@ class EventForm(forms.ModelForm):
 
     class Meta:
         model = Event
+        fields = '__all__'
 
     def __init__(self, *args, **kws):
         super(EventForm, self).__init__(*args, **kws)
@@ -391,3 +392,4 @@ class SingleOccurrenceForm(forms.ModelForm):
 
     class Meta:
         model = Occurrence
+        fields = '__all__'
